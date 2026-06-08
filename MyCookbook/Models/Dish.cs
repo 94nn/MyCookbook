@@ -1,4 +1,4 @@
-﻿namespace MyCookbook.Models
+﻿namespace MyCookbook.API.Models
 {
     public class Dish
     {
