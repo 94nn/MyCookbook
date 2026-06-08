@@ -1,10 +1,58 @@
 ﻿@page
-@model IndexModel
+@using MyCookbook.API.Models
+@model MyCookbook.Frontend.Pages.IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "My Cozy Cookbook";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-3 fw-bold game-title text-white mb-2">👩‍🍳 My Cozy Menu 🍳</h1>
+        <p class="fs-4 fw-bold text-muted">Level up your cooking stats! ✨</p>
+    </div>
+
+    <div class="row justify-content-center">
+        @foreach (var dish in Model.Dishes)
+        {
+            <div class="col-md-8 mb-5">
+                <div class="card game-card p-2">
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="fw-bold m-0" style="color: #118AB2;">✨ @dish.Name</h2>
+                            <span class="section-badge">🏷️ @dish.Category</span>
+                        </div>
+
+                        <p class="fs-5 text-muted bg-light p-3 rounded-3 border-start border-4 border-warning">
+                            " @dish.Description "
+                        </p>
+
+                        <hr style="border: 2px dashed #4A3E3D; opacity: 0.5;" class="my-4" />
+
+                        <h4 class="fw-bold mb-3" style="color: #FF6B6B;">📜 Cooking Quest Steps</h4>
+
+                        <div class="d-flex flex-column gap-3">
+                            @if (dish.Steps != null && dish.Steps.Any())
+                            {
+                                @foreach (var step in dish.Steps)
+                                {
+                                    <label class="quest-item d-flex align-items-center gap-3 w-100 style-cursor">
+                                        <input type="checkbox" class="quest-checkbox d-none" onchange="toggleStep(this)" />
+
+                                        <div class="step-check-bubble shadow-sm">
+                                            <span class="step-num-display">@step.StepNumber</span>
+                                            <span class="step-check-mark d-none">✔</span>
+                                        </div>
+
+                                        <div class="fs-5 fw-medium quest-text">@step.Instruction</div>
+                                    </label>
+                                }
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>

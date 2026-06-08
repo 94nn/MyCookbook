@@ -82,17 +82,26 @@ namespace MyCookbook.API.Controllers
             existingDish.Description = dish.Description;
             existingDish.Category = dish.Category;
 
-            // Replace all steps
+            // Remove old steps from database
             _context.DishSteps.RemoveRange(existingDish.Steps);
 
+            // Save the dish update + step removals FIRST
+            await _context.SaveChangesAsync();
+
+            // Now add new steps as fresh entities
             if (dish.Steps != null && dish.Steps.Any())
             {
+                var newSteps = new List<DishStep>();
                 foreach (var step in dish.Steps)
                 {
-                    step.DishId = id;
-                    step.Id = 0; // Force new IDs — don't reuse old ones
-                    _context.DishSteps.Add(step);
+                    newSteps.Add(new DishStep
+                    {
+                        DishId = id,
+                        StepNumber = step.StepNumber,
+                        Instruction = step.Instruction
+                    });
                 }
+                _context.DishSteps.AddRange(newSteps);
             }
 
             try
@@ -101,7 +110,6 @@ namespace MyCookbook.API.Controllers
             }
             catch (DbUpdateException ex)
             {
-                // Show the actual error message
                 return StatusCode(500, new { message = "Database error", error = ex.InnerException?.Message });
             }
 
